@@ -6,7 +6,7 @@
 #include <SDL2/SDL.h>
 #include <vector>
 #include <iostream>
-
+//g++ -o v4l2_sdl_capture captureviedoandplayit.cpp -lv4l2 -lSDL2
 struct Buffer { void* start; size_t length; };
 
 static inline uint8_t clip(int v) {
@@ -94,10 +94,19 @@ int main() {
             rgb[j++] = clip((298*(y1-16) - 100*(u-128) - 208*(v-128) + 128) >> 8);
             rgb[j++] = clip((298*(y1-16) + 516*(u-128) + 128) >> 8);
         }
-
-
-
         SDL_UpdateTexture(tex, nullptr, rgb.data(), 1280*3);
+
+// create a YUY2 texture instead of RGB24
+// SDL_Texture* tex = SDL_CreateTexture(
+//     ren,
+//     SDL_PIXELFORMAT_YUY2,
+//     SDL_TEXTUREACCESS_STREAMING,
+//     width, height);
+// // in the loop, after DQBUF:
+// SDL_UpdateTexture(tex, nullptr, yuyv, width * 2);
+
+
+        
         SDL_RenderClear(ren);
         SDL_RenderCopy(ren, tex, nullptr, nullptr);
         SDL_RenderPresent(ren);
